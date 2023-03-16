@@ -1,4 +1,4 @@
-# Internationalization (**i18n**) Migration Tool
+# Internationalization (**i18n**) Migration Tool v1.1
 
 **Migrator v1**: is a command line tool to help you create translation (`.properties` or `.json`) files from the **i18Nexus** collaboration tool.
 
@@ -61,12 +61,12 @@ Now let us see how we can run this tool.
    Java(TM) SE Runtime Environment (build 19.0.1+10-21)
    Java HotSpot(TM) 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)
    ```
-2. Download the [Migrator v1.0 tool](https://github.com/mTaman-ananas/i18n-migration-tool/releases/download/v1.0/i18n-migration-tool-1.0.jar).
+2. Download the [Migrator v1.1 tool](https://github.com/mTaman-ananas/i18n-migration-tool/releases/download/v1.1/i18n-migration-tool-1.1.jar).
 3. Open the command prompt, and run your file as the following:
 
    ```bash
    $ cd downloads
-   $ java -jar i18n-migration-tool-0.0.1-SNAPSHOT.jar
+   $ java -jar i18n-migration-tool-1.1.jar
    Migrator ==>
    ```
 4. Type help to see available commands:
@@ -122,6 +122,7 @@ Now let us see how we can run this tool.
    2023-03-16T10:43:23.946+01:00: Creating file messages_en.properties ...
    2023-03-16T10:43:25.268+01:00: Creating file messages_mk.properties ...
    2023-03-16T10:43:26.664+01:00: Creating file messages_sr.properties ...
+   2023-03-16T10:43:26.664+01:00: Creating file messages.properties ...
    2023-03-16T10:43:26.680+01:00: Done.
    ```
 8. Finally, when you finish with tool exit: `Migrator ==> exit`.

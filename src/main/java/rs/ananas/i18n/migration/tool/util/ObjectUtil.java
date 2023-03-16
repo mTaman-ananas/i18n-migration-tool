@@ -8,7 +8,8 @@ public class ObjectUtil {
     public static boolean isEmpty(String content) {
         return content == null ||
                 content.isBlank() ||
-                content.replace(" ", "").contains("{}");
+                content.replace(" ", "")
+                        .contains("{}");
     }
 
     public static String requireNonEmpty(String content, String message) {

@@ -13,12 +13,18 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.nio.file.Files.*;
+import static java.nio.file.Path.*;
+import static java.nio.file.StandardCopyOption.*;
+import static rs.ananas.i18n.migration.tool.util.ObjectUtil.requireNonEmpty;
 
 @Log4j2
 public final class IOUtil {
@@ -29,6 +35,12 @@ public final class IOUtil {
     private IOUtil() {
     }
 
+    public static boolean isValidFileFormat(String format) {
+        requireNonEmpty(format, "File format can't be empty");
+        return Stream.of(JSON, PROPERTIES)
+                .anyMatch(result -> result.equalsIgnoreCase(format));
+    }
+
     public static String getUrl(String language, String namespace, String apiKey) {
         String base = "https://api.i18nexus.com/project_resources/translations/%s/%s.json?api_key=%s";
         return format(base, language, namespace, apiKey);
@@ -36,6 +48,10 @@ public final class IOUtil {
 
     private static String getFileName(String fileName, String language, String extension) {
         return String.format("%s_%s.%s", fileName, language, extension);
+    }
+
+    private static String getBaseFileName(String fileName, String extension) {
+        return String.format("%s.%s", fileName, extension);
     }
 
     public static List<String> getProjectNamespaces(String apiKey) throws IOException, InterruptedException {
@@ -87,8 +103,8 @@ public final class IOUtil {
         Path directory = Paths.get(projectName);
 
         log.info("Creating file {} ...", getFileName(fileName, language, extension));
-        if (!Files.exists(directory))
-            Files.createDirectories(directory);
+        if (!exists(directory))
+            createDirectories(directory);
 
         if (JSON.equalsIgnoreCase(extension)) {
             saveToJsonFile(directory, fileName, language, content);
@@ -100,7 +116,7 @@ public final class IOUtil {
         ObjectMapper mapper = new ObjectMapper();
         String prettifiedJson = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(mapper.readValue(content, Object.class));
-        Files.writeString(Paths.get(directory.toString(), getFileName(fileName, language, JSON)), prettifiedJson);
+        writeString(Paths.get(directory.toString(), getFileName(fileName, language, JSON)), prettifiedJson);
     }
 
     private static void saveToPropertiesFile(Path directory, String fileName, String language, String content) throws IOException {
@@ -109,12 +125,16 @@ public final class IOUtil {
                 .writeValueAsProperties(new ObjectMapper()
                         .readValue(content, Map.class));
 
-        try (FileWriter fw =
-                     new FileWriter(Paths.get(directory.toString(),
-                             getFileName(fileName, language, PROPERTIES)).toFile())) {
+        var filePath = Paths.get(directory.toString(),
+                getFileName(fileName, language, PROPERTIES));
 
-            props.store(fw, "Auto generated file by migrator tool v0.1");
+        try (FileWriter fw = new FileWriter(filePath.toFile())) {
+            props.store(fw, "Auto generated file by migrator tool v1.1");
+
+            if ("sr".equalsIgnoreCase(language)) {
+                copy(filePath, of(directory.toString(), getBaseFileName(fileName, PROPERTIES)), REPLACE_EXISTING);
+                log.info("Creating file {} ...", getBaseFileName(fileName, PROPERTIES));
+            }
         }
     }
-
 }

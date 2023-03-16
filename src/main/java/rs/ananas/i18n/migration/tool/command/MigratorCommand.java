@@ -9,7 +9,6 @@ import org.springframework.shell.standard.ShellOption;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static rs.ananas.i18n.migration.tool.util.IOUtil.*;
 import static rs.ananas.i18n.migration.tool.util.ObjectUtil.isEmpty;
@@ -23,12 +22,6 @@ public class MigratorCommand {
     private String projectName;
     private String fileName;
     private String format;
-
-    public static boolean isValidFileFormat(String format) {
-        requireNonEmpty(format, "File format can't be empty");
-        return Stream.of(JSON, PROPERTIES)
-                .anyMatch(result -> result.equalsIgnoreCase(format));
-    }
 
     @ShellMethod(value = """ 
             To configure the migrator too with the following parameters:
@@ -50,30 +43,29 @@ public class MigratorCommand {
         this.fileName = requireNonEmpty(fileName, "file name can't be empty.");
         this.format = format.toLowerCase();
 
-        log.info("Configurations: [API Key: '{}', Project name: '{}', File name: '{}', File format '{}']",
+        log.info("Configurations: [\nAPI Key: '{}', \nProject name: '{}', \nFile name: '{}', \nFile format '{}']",
                 this.apiKey, this.projectName, this.fileName, this.format);
     }
 
     @ShellMethod("Download content and create the files. This command is available once you configure the tool.")
     public void migrate() throws IOException, InterruptedException {
-        log.info("Current Configs: [Project APIKey/name: '{}'/'{}', File name/format: '{}'/'{}']",
+        log.info("Current Configs: [Project APIKey/name: '{}'/'{}', \n File name/format: '{}'/'{}']",
                 this.apiKey, this.projectName, this.fileName, this.format);
 
-        log.info("Connecting to i18Nexus for project {{}}...", this.apiKey);
+        log.info("Connecting to i18Nexus for project {{}} ...", this.apiKey);
 
-        List<String> languages = new ArrayList<>(getProjectLanguages(this.apiKey));
-        log.info("Fetched languages [{}].", languages);
+        List<String> languages = getProjectLanguages(this.apiKey);
+        log.info("Fetched languages {}", languages);
 
-        List<String> namespaces = new ArrayList<>(getProjectNamespaces(this.apiKey));
-        log.info("Fetched namespaces [{}].", namespaces);
+        List<String> namespaces = getProjectNamespaces(this.apiKey);
+        log.info("Fetched namespaces {}", namespaces);
 
         StringBuilder content;
 
         if (!(languages.isEmpty() || namespaces.isEmpty()))
-            log.info("Fetching content & Creating files...");
+            log.info("Fetching content & Creating files ...");
         else
             log.info("No content to fetch, then no files to create!");
-
 
         for (String language : languages) {
             content = new StringBuilder();
