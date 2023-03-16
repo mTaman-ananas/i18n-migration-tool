@@ -53,7 +53,7 @@ To build the tool on your own
 
 Now let us see how we can run this tool.
 
-1. First, ensure you have Java (you don't need maven here).
+1. First, ensure you have Java (you don't need maven).
 
    ```bash
    $ java --version
@@ -61,7 +61,7 @@ Now let us see how we can run this tool.
    Java(TM) SE Runtime Environment (build 19.0.1+10-21)
    Java HotSpot(TM) 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)
    ```
-2. Download the migrator v1 tool's latest version from here.
+2. Download the [Migrator v1.0 tool](https://github.com/mTaman-ananas/i18n-migration-tool/releases/download/v1.0/i18n-migration-tool-1.0.jar).
 3. Open the command prompt, and run your file as the following:
 
    ```bash
