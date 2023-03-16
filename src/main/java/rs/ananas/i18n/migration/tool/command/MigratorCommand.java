@@ -31,12 +31,11 @@ public class MigratorCommand {
     }
 
     @ShellMethod(value = """ 
-            Build i18Nexus project remote server, and migration configuration.
-             The you can use the following parameters:
-                - API key: i18Nexus project API Key, mandatory field.
-                - Project name: Project name, so all files will be saved inside this folder. Default "i18n".
-                - File name: File name to save content to. default "messages".
-                - File format: final out file content and file format. Default ".properties"
+            To configure the migrator too with the following parameters:
+                - API key (--apiKey): i18Nexus project API Key, The only mandatory parameter.
+                - Project name (--projectName): all the files will be saved inside this folder. The default value is "i18n".
+                - File name (--fileName): to save fetched content to it. The default value is "messages".
+                - File format (--format): is the final file content type and format [JSON, PROPERTIES]. The default is "properties"
             """)
     public void config(@ShellOption String apiKey,
                        @ShellOption(defaultValue = "i18n") String projectName,
@@ -55,8 +54,8 @@ public class MigratorCommand {
                 this.apiKey, this.projectName, this.fileName, this.format);
     }
 
-    @ShellMethod("Download content and create the files.")
-    public void download() throws IOException, InterruptedException {
+    @ShellMethod("Download content and create the files. This command is available once you configure the tool.")
+    public void migrate() throws IOException, InterruptedException {
         log.info("Current Configs: [Project APIKey/name: '{}'/'{}', File name/format: '{}'/'{}']",
                 this.apiKey, this.projectName, this.fileName, this.format);
 
@@ -91,7 +90,7 @@ public class MigratorCommand {
         log.info("Done.");
     }
 
-    public Availability downloadAvailability() {
+    public Availability migrateAvailability() {
         return apiKey != null && !apiKey.isBlank()
                 ? Availability.available()
                 : Availability.unavailable("you are not configured.");
